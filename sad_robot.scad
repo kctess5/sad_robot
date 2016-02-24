@@ -133,7 +133,7 @@ module sad_robot(face, sadness, head_size, total_size) {
 			scale(head_size)
 				rotate([90 + 40*sadness,10,0]) 
 					translate([0,.5,.5])
-						head(.55, face, 0.5, .4, .2, .5);
+						head(.55, face, 0.5, .4, .2, $t);
 		// body
 		color([.2,.6,.95])  
 			translate([0,.5,-.8 * 1-.2]) 

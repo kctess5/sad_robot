@@ -1,9 +1,11 @@
-module head(back_depth, file, z_scale, scale_factor, hold_factor, t) {
+include <./face.scad>;
+
+module head(back_depth, z_scale, scale_factor, hold_factor, t) {
 	// back part
 	color([1,.7,1]) 
 		hull() {
 			translate([0,0,-0.5*back_depth]) cube([1.2,1.03,back_depth], center=true);
-			translate([0,0,-0.6*back_depth]) cube([.8,.7, back_depth], center=true);
+			translate([0,0,-0.6*back_depth])  cube([.8,.7, back_depth], center=true);
 		}
 
 	// this bit of math scales the 0->1 value of t to 0->1->1->0 with a hold at 1 in the center
@@ -11,17 +13,16 @@ module head(back_depth, file, z_scale, scale_factor, hold_factor, t) {
 	tp = 1 - max(0, abs(x*(t-0.5)) - hold_factor);
 
 	// face
-	color([.2,.6,.95]) 
-		union() {
-			cube([1.15,1,.01], center=true);
-			translate([0,0, (scale_factor-1)*back_depth * (1-tp)]) 
-				scale([1, 1, 1]) resize([1,1,z_scale*(tp*scale_factor+1-scale_factor)]) 
-					surface(file = file, center=true);
-		}
+	union() {
+		scale([1.15,1,.01]) translate([-.5,-.5, 0]) robot_face_flat(t);
+		translate([0,0, (scale_factor-1)*back_depth * (1-tp)]) 
+			scale([1, 1, 1]) scale([1,1,z_scale*(tp*scale_factor+1-scale_factor)])
+				 rotate([0,0,180]) translate([-.5,-.5,-.3])  robot_face(t);
+	}
 }
 
 module hand() {
-	union() {
+	union() { 
 		// palm
 		resize([1.5,4,3]) sphere([1,1,1], $fn=100);
 		// fingers
@@ -126,14 +127,14 @@ module body() {
 	}
 }
 
-module sad_robot(face, sadness, head_size, total_size) {
-	scale(total_size) rotate([10,0,0]) union() {
+module sad_robot(sadness, head_size, total_size) {
+	scale(total_size) rotate([7,0,0]) union() {
 		// head
 		translate([0,.5+.15*head_size,-.2+.02*head_size])
 			scale(head_size)
 				rotate([90 + 40*sadness,10,0]) 
 					translate([0,.5,.5])
-						head(.55, face, 0.5, .4, .2, $t);
+						head(.55, 0.5, .4, .2, $t);
 		// body
 		color([.2,.6,.95])  
 			translate([0,.5,-.8 * 1-.2]) 
@@ -141,4 +142,4 @@ module sad_robot(face, sadness, head_size, total_size) {
 	}
 }
 
-sad_robot("./output/face2.png", .85, 1.2, 1);
+sad_robot(.85, 1.2, 1);

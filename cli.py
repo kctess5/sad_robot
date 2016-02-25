@@ -26,10 +26,10 @@ parser.add_argument('image',
                 help='Input depth map')
 
 parser.add_argument('output',
-				metavar='output directory', 
+				metavar='output file', 
 				type=str, 
 				nargs=1,
-                help='Pixelized depth map output')
+                help='Sets output path for generated OpenSCAD face')
 
 parser.add_argument('-d', '--depth',
 				metavar='z-depth', 
@@ -37,7 +37,7 @@ parser.add_argument('-d', '--depth',
 				nargs=1,
                 help='Z-axis resolution',
                 required=False,
-                default=255)
+                default=[255])
 
 parser.add_argument('-s', '--subsample',
 				metavar='subsampling', 
